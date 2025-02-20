@@ -1,0 +1,10 @@
+By sprawdzić funckjonalność menedżera Blutootha, należy:
+1. wybrać aktywność "Blugger"
+2. wybrać opcję "GetPairedDevices" na górze (wyświetli się lista sparowanych urządzeń)
+3. nacisnąć na odpowiednie urządzenie o nazwie "QuackPLank"
+4. wybrać "TryConnect"
+
+W tym momencie po połączeniu się powinna zostać wyświetlona najnowsza wiadomość z mikrokontrolera na polu "Val"
+
+Dodatek: 
+Wszystkie niewspomniane przyciski, wyszły z użycia wraz z rozwojem aplikacji do obecnego punktu. Obecnie nie pełnią żadnej znaczącej roli, ani obsługiwanej funckjonalności (pojawi się wiadomość że działa ale nic poza tym)
