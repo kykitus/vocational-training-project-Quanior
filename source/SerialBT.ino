@@ -7,7 +7,6 @@ MPU6050 mpu(Wire);
 BluetoothSerial SerialBT;
 
 String result = "";
-unsigned long timer = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -38,8 +37,7 @@ void setup() {
 void loop() {
 
   mpu.update();
-  if(millis() - timer > 10)
-  { // print data every second
+
   result.concat(mpu.getAngleX());
   result.concat(" ");
   result.concat(mpu.getAngleY());
@@ -48,7 +46,6 @@ void loop() {
 
   SerialBT.println(result);
   result = "";
-  timer = millis();
-  }
-  //delay(20);
+  
+  delay(20);
 }
