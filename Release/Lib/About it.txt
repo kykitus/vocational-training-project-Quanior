@@ -1,0 +1,2 @@
+zip file here is a Fork of MPU6050 light library fork that belongs to "psycoos"
+https://github.com/psycoos/MPU6050_light_better
