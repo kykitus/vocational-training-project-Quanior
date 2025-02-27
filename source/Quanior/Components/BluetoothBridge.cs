@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Android;
 using UnityEngine.Events;
@@ -9,12 +11,15 @@ public class BluetoothBridge : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public BluetoothManager Bridge;
-
     public string Message;
-
     public UnityEvent Data;
 
-    void Awake()
+    Vector3 Angles = Vector3.zero;
+
+    public Vector3 Offsets = Vector3.zero;
+    public Vector3 Scale = Vector3.one;
+
+    public void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
     }
@@ -27,37 +32,37 @@ public class BluetoothBridge : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Vector3 get_RawAngles() { return Angles; }
 
-    public Vector3 extract_Data_Classic()
+    public Vector3 get_Angles() { return new Vector3((Angles.x - Offsets.y) * Scale.y, (Angles.y - Offsets.x) * Scale.x, (Angles.z - Offsets.z) * Scale.z); }
+
+    public void extract_Data_Classic()
     {
         string data = Bridge.Found;
-        Vector3 result = new Vector3();
+
         int separator = data.IndexOf(" ", StringComparison.Ordinal);
 
-        if (separator == 0) { return Vector3.zero; }
+        if (separator == 0) { return; }
+        print(data);
+        Angles.x = float.Parse(data.Substring(0, separator), CultureInfo.InvariantCulture);
 
-        result.x = Int32.Parse(data.Substring(0, separator));
-        data = data.Substring(0, separator);
-        result.z = Int32.Parse(data.Substring(0, separator));
-        data = data.Substring(0, separator);
-        result.y = Int32.Parse(data.Substring(0, separator));
+        data = data.Substring(separator+1);
+        print(data);
+        separator = data.IndexOf(" ", StringComparison.Ordinal);
 
-        return result;
+        Angles.y = float.Parse(data.Substring(0, separator), CultureInfo.InvariantCulture);
+
+        data = data.Substring(separator+1);
+        print(data);
+        Angles.z = float.Parse(data, CultureInfo.InvariantCulture);
+
     }
 
     public void get_Data() 
     {
         Message = Bridge.Found;
+        extract_Data_Classic();
         Data.Invoke();
     }
 
-    void setup_to_Scene(Scene current, Scene next) 
-    {
-
-    }
 }

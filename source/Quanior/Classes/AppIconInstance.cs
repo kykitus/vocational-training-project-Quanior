@@ -41,6 +41,7 @@ public class AppIconInstance : MonoBehaviour
 
     public void on_Click() 
     {
+        print(GameObject.Find("Curtain").gameObject.GetComponent<Curtain>());
         SceneManager.LoadScene(ScenePath);
     }
 
