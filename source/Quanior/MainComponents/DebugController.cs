@@ -18,7 +18,6 @@ public class DebugController : MonoBehaviour
     public BluetoothDump Dump;
     public DebugBall Ball;
     public GameObject Slider;
-    public BluetoothServiceManager Manager;
 
 
     public BluetoothBridge Bridge;
@@ -43,7 +42,7 @@ public class DebugController : MonoBehaviour
 
     public void try_Connect() 
     {
-        Bridge.Bridge.DeviceToConnect = Manager.get_DeviceMAC();
+        //Bridge.Bridge.DeviceToConnect = Manager.get_DeviceMAC();
         Bridge.Bridge.StartConnection();
     }
 

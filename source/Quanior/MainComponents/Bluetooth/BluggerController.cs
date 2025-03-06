@@ -15,19 +15,19 @@ public class BluggerController : MonoBehaviour
     public BluetoothDump Dump;
     public GameObject Slider;
     public DebugBall Ball;
-    public BluetoothServiceManager Manager;
 
 
     public BluetoothBridge Bridge;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Bridge = GameObject.Find("BluetoothBridge").GetComponent<BluetoothBridge>();
+        GameObject bridg = GameObject.Find("BluetoothBridge");
+        if (bridg == null) { print("Bridge not found"); }
+        else { Bridge = bridg.GetComponent<BluetoothBridge>(); Bridge.Data.AddListener(fetch_Data); }
+
         GetPaired.onClick.AddListener(get_paired);
         Connector.onClick.AddListener(try_Connect);
         Returner.onClick.AddListener(returner);
-
-        Bridge.Data.AddListener(fetch_Data);
     }
 
     // Update is called once per frame
@@ -36,12 +36,11 @@ public class BluggerController : MonoBehaviour
         
     }
 
-    public void returner() { SceneManager.LoadScene("MainMenu"); }
+    public void returner() { Bridge.come_Back(); }
 
-    public void try_Connect() 
+    public void try_Connect()
     {
-        Bridge.Bridge.DeviceToConnect = Manager.get_DeviceMAC();
-        Bridge.Bridge.StartConnection();
+        Bridge.try_Connect();
     }
 
     public void fetch_Data()

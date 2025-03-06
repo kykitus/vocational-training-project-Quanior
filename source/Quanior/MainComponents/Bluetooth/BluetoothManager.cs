@@ -21,7 +21,9 @@ public class BluetoothManager : MonoBehaviour
     public string Found;
 
     public UnityEvent Fetcher;
+    public UnityEvent<bool> Connect;
     int quantity = 0;
+    public bool IsConnected = false;
     public GameObject Selectable;
     public GameObject Slider;
     //
@@ -30,10 +32,6 @@ public class BluetoothManager : MonoBehaviour
     private static AndroidJavaObject BluetoothConnector;
     // Start is called before the first frame update
 
-    void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
     void Start()
     {
         InitBluetooth();
@@ -167,6 +165,7 @@ public class BluetoothManager : MonoBehaviour
     {
         Toast("Connection Status: " + status);
         isConnected = status == "connected";
+        Connect.Invoke(isConnected);
     }
 
     // This function will be called by Java class whenever BT data is received,

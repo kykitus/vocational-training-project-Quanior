@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76668244c1a176344b7053d48893c17d, type: 3}
   m_Name: 8Ustawienia
   m_EditorClassIdentifier: 
-  Icon: {fileID: 2800000, guid: e549ddc36ede6d24980b06a569a8dc62, type: 3}
+  Icon: {fileID: 2800000, guid: 2450a6d64ab274443b11209be2d08336, type: 3}
   AppName: Ustawienia
   SceneName: Settings
+  TransitionColor: {r: 1, g: 0.9619521, b: 0.5235849, a: 0}

@@ -1,18 +1,24 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Curtain : MonoBehaviour
-{
-    Animator Anims;
+{ 
+    Animation Anim;
+    SpriteRenderer Fiber;
+    string TargetScene = "Setting";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
+        if (GameObject.FindWithTag("Only") != null && GameObject.FindWithTag("Only") != gameObject) { Destroy(gameObject); return; }
+        gameObject.tag = "Only";
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        Anims = GetComponent<Animator>();
+        Anim = GetComponent<Animation>();
+        Fiber = GetComponent<SpriteRenderer>();
         //SceneManager.activeSceneChanged += switch_Activity;
     }
 
@@ -22,5 +28,12 @@ public class Curtain : MonoBehaviour
         
     }
 
-    public void switch_Activity() { Anims.Play("CurtainDOWN"); Anims.Play("CurtainUP"); print("Curtaining"); }
+    public void switch_Activity(Color color, string scene_path)
+    {
+        Fiber.color = color;
+        TargetScene = scene_path;
+        Anim.Play("CurtainSwitch");
+    }
+
+    public void change() { SceneManager.LoadScene(TargetScene); }
 }

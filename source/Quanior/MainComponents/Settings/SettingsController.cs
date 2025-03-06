@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using UnityEngine.Events;
+using System.Linq;
 
 public class SettingsController : MonoBehaviour
 {
@@ -10,6 +12,11 @@ public class SettingsController : MonoBehaviour
     public Button SetBase;
     public Button DelBase;
     public Button Returner;
+
+    public Button Sampler;
+    public Button Desampler;
+
+    public TextMeshProUGUI[] Samplers = new TextMeshProUGUI[4];
 
     //Presets
     public Button Max25;
@@ -34,16 +41,23 @@ public class SettingsController : MonoBehaviour
 
     string MaxPosTemplate = "Maksymane wychylenie (X Y): ";
     string OutputPosTemplate = "Obecne wychylenie (X Y): ";
-    Vector2 MaxAngle = new Vector2(90f, 90f);
+
+    long NextTwitch;
+
+    UnityAction Samplerator = () => { };
 
     void Start()
     {
-        Bridge = GameObject.Find("BluetoothBridge").GetComponent<BluetoothBridge>();
-
+        GameObject bridg = GameObject.Find("BluetoothBridge");
+        if (bridg == null) { print("Bridge not found"); }
+        else { Bridge = bridg.GetComponent<BluetoothBridge>(); Bridge.Data.AddListener(move); }
 
         SetBase.onClick.AddListener(set_Base);
         DelBase.onClick.AddListener(del_Base);
         Returner.onClick.AddListener(returner);
+
+        Sampler.onClick.AddListener(() => { Bridge.set_Smapler(true); Samplerator = get_Samples; });
+        Desampler.onClick.AddListener(() => { Bridge.set_Smapler(true); Bridge.flush_Samples(); Samplerator = () => { }; foreach (TextMeshProUGUI n in Samplers) n.text = ""; });
 
         Max25.onClick.AddListener(() => { set_ScaleX(3.6f); set_ScaleY(3.6f); });
         Max35.onClick.AddListener(() => { set_ScaleX(2.5714f); set_ScaleY(2.5714f); });
@@ -58,8 +72,15 @@ public class SettingsController : MonoBehaviour
         OffsetterY.value = Bridge.Offsets.y;
         ScaleX.value = Bridge.Scale.y;
         ScaleY.value = Bridge.Scale.y;
+    }
 
-        Bridge.Data.AddListener(move);
+    void Update()
+    {
+        if (Environment.TickCount > NextTwitch)
+        {
+            Samplerator();
+            NextTwitch = Environment.TickCount + 1000;
+        }
     }
 
     void set_Base() 
@@ -78,19 +99,34 @@ public class SettingsController : MonoBehaviour
         OffsetterX.value = 0;
         OffsetterY.value = 0;
     }
-    void returner() { SceneManager.LoadScene("MainMenu"); }
-
-    void set_OffsetX(float val) { Bridge.Offsets.x = val; OXVal.text = val.ToString(); update_BallOrigin(); Output1.text = MaxPosTemplate + update_MaxAngle().ToString(); }
-    void set_OffsetY(float val) { Bridge.Offsets.y = val; OYVal.text = val.ToString(); update_BallOrigin(); Output1.text = MaxPosTemplate + update_MaxAngle().ToString(); }
+    void returner() { Bridge.save_SaveData(); Bridge.come_Back(); }
+    void set_OffsetX(float val) 
+    {
+        Bridge.Offsets.x = val;
+        Bridge.Vault.Offsets.x = val;
+        OXVal.text = val.ToString();
+        update_BallOrigin();
+        Output1.text = MaxPosTemplate + update_MaxAngle().ToString();
+    }
+    void set_OffsetY(float val) 
+    {
+        Bridge.Offsets.y = val;
+        Bridge.Vault.Offsets.y = val;
+        OYVal.text = val.ToString();
+        update_BallOrigin();
+        Output1.text = MaxPosTemplate + update_MaxAngle().ToString();
+    }
     void Button_set_ScaleX(float val)
     {
         Bridge.Scale.x = val;
+        Bridge.Vault.Scale.x = val;
         SXVal.text = val.ToString();
         Output1.text = MaxPosTemplate + update_MaxAngle().ToString();
     }
     void Button_set_ScaleY(float val)
     {
         Bridge.Scale.y = val;
+        Bridge.Vault.Scale.y = val;
         SYVal.text = val.ToString();
         Output1.text = MaxPosTemplate + update_MaxAngle().ToString();
     }
@@ -112,5 +148,13 @@ public class SettingsController : MonoBehaviour
     void update_BallOrigin()
     {
         BallOrigin.transform.localPosition = new Vector3((float)Math.Sin(-1 * Bridge.Offsets.x * 0.01745329) * 1.5f, -1 * (float)Math.Sin( -1 * Bridge.Offsets.y * 0.01745329) * 1.5f);
+    }
+
+    void get_Samples() 
+    {
+        Samplers[0].text = Bridge.get_Sample(0, 0).ToString();
+        Samplers[1].text = Bridge.get_Sample(1, 0).ToString();
+        Samplers[2].text = Bridge.get_Sample(0, 1).ToString();
+        Samplers[3].text = Bridge.get_Sample(1, 1).ToString();
     }
 }

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76668244c1a176344b7053d48893c17d, type: 3}
+  m_Name: 2Samolut
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 2800000, guid: 2b9e6ee1d9428b64f9d007d08e0572ec, type: 3}
+  AppName: Samolut
+  SceneName: Samolut
+  TransitionColor: {r: 0.5547793, g: 0.8584906, b: 0.82771665, a: 0}

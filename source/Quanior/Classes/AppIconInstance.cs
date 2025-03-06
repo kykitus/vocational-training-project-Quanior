@@ -10,6 +10,7 @@ public class AppIconInstance : MonoBehaviour
     Image Icon;
     TextMeshPro Name;
     string ScenePath = "MainMenu";
+    Color TransitionColor = Color.green;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,12 +19,6 @@ public class AppIconInstance : MonoBehaviour
         Name = transform.Find("Name").gameObject.GetComponent<TextMeshPro>();
 
         update_Layout();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void set_Preset(AppIcon preset)
@@ -37,12 +32,12 @@ public class AppIconInstance : MonoBehaviour
         Icon.sprite = Sprite.Create(Preset.Icon, new Rect(0.0f, 0.0f, Preset.Icon.width, Preset.Icon.height), new Vector2(0.5f, 0.5f), 100.0f);
         Name.text = Preset.AppName;
         ScenePath = Preset.SceneName;
+        TransitionColor = Preset.TransitionColor;
     }
 
     public void on_Click() 
     {
-        print(GameObject.Find("Curtain").gameObject.GetComponent<Curtain>());
-        SceneManager.LoadScene(ScenePath);
+        GameObject.Find("Curtain").gameObject.GetComponent<Curtain>().switch_Activity(TransitionColor, ScenePath);
     }
 
 

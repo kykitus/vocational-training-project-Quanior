@@ -7,13 +7,13 @@ public class DeviceButton : MonoBehaviour
     public TextMeshProUGUI Name;
     Button Clicker;
 
-    public BluetoothServiceManager Selector;
+    public BluggerController Selector;
     public BluetoothDump Dump;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Clicker = GetComponent<Button>();
-        Selector = GameObject.Find("Manager").GetComponent<BluetoothServiceManager>();
+        Selector = GameObject.Find("Controller").GetComponent<BluggerController>();
         Dump = GameObject.Find("Dump").GetComponent<BluetoothDump>();
 
         Clicker.onClick.AddListener(Clicked);
@@ -27,8 +27,7 @@ public class DeviceButton : MonoBehaviour
 
     public void Clicked() 
     {
-        print(Name);
-        Selector.SelectedDevice = Name.text;
-        Dump.print_Log("Selected: " + Name.text);
+        Selector.Bridge.set_LastMAC(Name.text);
+        Dump.print_Log("Wybrano: " + Name.text);
     }
 }

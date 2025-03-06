@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76668244c1a176344b7053d48893c17d, type: 3}
   m_Name: 9Blugger
   m_EditorClassIdentifier: 
-  Icon: {fileID: 2800000, guid: bbc000409437dca49bb7998a70cdcc39, type: 3}
+  Icon: {fileID: 2800000, guid: 79c98ee9a192f68498ffaa543eac9800, type: 3}
   AppName: Blugger
   SceneName: BluetoothDebugger
+  TransitionColor: {r: 0.496351, g: 0.58478105, b: 0.735849, a: 0}
