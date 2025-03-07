@@ -10,6 +10,7 @@ public class PlaneController : MonoBehaviour
     public Button Starter;
     public Button Returner;
     public Button Pauser;
+    public Toggle Mode;
 
     public Animation MenuAnimator;
 
@@ -38,6 +39,7 @@ public class PlaneController : MonoBehaviour
         Starter.onClick.AddListener(starter);
         Returner.onClick.AddListener(returner);
         Pauser.onClick.AddListener(pauser);
+        Mode.onValueChanged.AddListener(set_Mode);
 
         Plane.CoinUP.AddListener(coin_Add);
         Plane.Died.AddListener(pauser);
@@ -55,6 +57,12 @@ public class PlaneController : MonoBehaviour
     void starter() { Game.start_Game(); set_AnimDirection(false); MenuAnimator.Play("PlaneMenuAppear"); }
     void returner() { Bridge.come_Back(); }
     void pauser() { Game.pause_Game(); set_AnimDirection(true); MenuAnimator.Play("PlaneMenuAppear"); }
+
+    void set_Mode(bool which) 
+    {
+        Game.set_Mode(which);
+        Plane.set_Mode(which);
+    }
 
     void set_AnimDirection(bool back) 
     {

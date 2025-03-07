@@ -37,6 +37,8 @@ public class PlaneGame : MonoBehaviour
     UnityAction Ticker;
     UnityAction NeedDraw;
     UnityAction Speedster;
+    UnityAction Danger;
+    UnityAction Coiner;
 
     Queue<Vector2> BlockDrawQueue = new Queue<Vector2>();
 
@@ -52,6 +54,8 @@ public class PlaneGame : MonoBehaviour
         Ticker = () => { };
         NeedDraw = () => { };
         Speedster = () => { };
+        Danger = choose_Danger;
+        Coiner = draw_Coin;
         Plane.Died.AddListener(stop_Game);
     }
 
@@ -70,7 +74,7 @@ public class PlaneGame : MonoBehaviour
         {
             if (Environment.TickCount > NextTwitch)
             {
-                choose_Danger();
+                Danger();
                 NextTwitch = Environment.TickCount + get_BlockTime();
 
             }
@@ -106,6 +110,31 @@ public class PlaneGame : MonoBehaviour
                 break;
             case 5:
                 scatter_Block();
+                break;
+        }
+    }
+
+    void choose_easy_Danger()
+    {
+        int seed = Mathf.CeilToInt(UnityEngine.Random.Range(1f, Difficulty) / 4f);
+
+        if (BlockDrawQueue.Count == 0) { NeedDraw = draw; }
+        switch (seed)
+        {
+            case 1:
+                easy_scatter_Block();
+                break;
+            case 2:
+                easy_scatter_Block();
+                break;
+            case 3:
+                easy_scatter_Block();
+                break;
+            case 4:
+                easy_scatter_Block();
+                break;
+            case 5:
+                easy_scatter_Block();
                 break;
         }
     }
@@ -158,11 +187,22 @@ public class PlaneGame : MonoBehaviour
         }
     }
 
+    void easy_scatter_Block()
+    {
+        Vector2 pos_base = new Vector2(UnityEngine.Random.Range(-SpawnRange.x, SpawnRange.x), 0f);
+        add_to_Queue(pos_base);
+    }
+
+    Vector2 get_EasyPos() 
+    {
+        return new Vector2(UnityEngine.Random.Range(-SpawnRange.x, SpawnRange.x), 0f);
+    }
+
     void draw() 
     {
         Vector2 pos = BlockDrawQueue.Dequeue();
         draw_Block(pos, Block);
-        if (Counter % 10 == 0) { draw_Block(get_RandomPos(), Coin); }
+        if (Counter % 10 == 0) { Coiner(); }
         Counter++;
     }
 
@@ -199,4 +239,14 @@ public class PlaneGame : MonoBehaviour
             Ground["BushMove"].speed = Mathf.Lerp(Ground["BushMove"].speed, TargetSpeed, 0.02f);
         }
     }
+
+    public void set_Mode(bool mode) 
+    {
+        if (mode) { Danger = choose_easy_Danger; Coiner = draw_easy_Coin; }
+        else { Danger = choose_Danger; Coiner = draw_Coin; }
+    }
+
+    void draw_Coin() { draw_Block(get_RandomPos(), Coin); }
+    void draw_easy_Coin() { draw_Block(get_EasyPos(), Coin); }
 }
+

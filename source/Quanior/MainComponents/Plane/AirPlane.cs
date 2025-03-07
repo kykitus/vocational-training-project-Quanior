@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 using System;
-using Unity.VisualScripting;
 using TMPro;
+using UnityEngine.UI;
 
 public class AirPlane : MonoBehaviour
 {
@@ -19,6 +19,8 @@ public class AirPlane : MonoBehaviour
     Vector2 Velocity = Vector2.zero;
     int Coins = 0;
 
+    //public Slider Debugger;
+    
     public UnityEvent Died;
     public UnityEvent DiedEvenMore;
     public UnityEvent CoinUP;
@@ -26,6 +28,8 @@ public class AirPlane : MonoBehaviour
 
     Animation Anim;
 
+    UnityAction CurrentFlight;
+    UnityAction CurrentDeath;
 
     public BluetoothBridge Bridge;
 
@@ -35,7 +39,12 @@ public class AirPlane : MonoBehaviour
         if (bridg == null) { print("Bridge not found"); }
         else { Bridge = bridg.GetComponent<BluetoothBridge>(); Bridge.Data.AddListener(steer); }
         Anim = GetComponent<Animation>();
+        CurrentFlight = hard_Flight;
+        CurrentDeath = hard_Death;
+        //Debugger.onValueChanged.AddListener(debug);
     }
+
+    //void debug(float val) { transform.position = new Vector2(val * PositionRange.x, 0f); }
 
     void Update() { Steerer(); }
 
@@ -50,19 +59,44 @@ public class AirPlane : MonoBehaviour
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, -1 * Mathf.Lerp(transform.rotation.z, MaxRotation * Mathf.Sign(angle.x), Math.Abs(angle.x))));
     }
 
+    void easy_Steer() 
+    {
+        Vector2 angle = Bridge.get_Angles();
+        angle = new Vector2((float)Math.Sin(angle.y * 0.01745329) * PositionRange.x, 0f);
+        transform.position = angle;
+    }
+
     void flight() 
+    {
+        CurrentFlight();   
+    }
+
+    void post_mortem_flight() 
+    {
+        CurrentDeath();
+    }
+
+    void hard_Flight() 
     {
         move();
         hit_Wall();
         damp_Velocity();
     }
-
-    void post_mortem_flight() 
+    void  easy_Flight()
+    {
+        easy_Steer();
+    }
+    void hard_Death() 
     {
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(30f, transform.rotation.y, transform.rotation.z), 0.02f);
         Velocity.y -= MaxSpeed.y * 2.5f;
         move();
     }
+    void easy_Death() 
+    {
+        fucking_die();
+    }
+
 
     void move() { transform.position += new Vector3(Velocity.x, Velocity.y) * Time.deltaTime; }
 
@@ -123,6 +157,15 @@ public class AirPlane : MonoBehaviour
                 fucking_die();
                 break;
         }
+    }
+
+    void set_Hard() { CurrentFlight = hard_Flight; CurrentDeath = hard_Death; Bridge.Data.RemoveListener(easy_Steer); ; Bridge.Data.AddListener(steer); }
+    void set_Easy() { CurrentFlight = easy_Flight; CurrentDeath = easy_Death; Bridge.Data.RemoveListener(steer); Bridge.Data.AddListener(easy_Steer); }
+
+    public void set_Mode(bool mode)
+    {
+        if (mode) { set_Easy(); }
+        else { set_Hard(); }
     }
 
 }
