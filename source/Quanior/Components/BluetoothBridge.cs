@@ -200,7 +200,10 @@ public class BluetoothBridge : MonoBehaviour
 
     void Sample() 
     {
-        SampleCounter[Math.Sign(Angles.x)][Math.Sign(Angles.y)]++;
+        int x = Angles.x > 0 ? 1 : 0;
+        int y = Angles.y > 0 ? 1 : 0;
+
+        SampleCounter[y][x]++;
         AllCounts++;
     }
 
@@ -208,6 +211,10 @@ public class BluetoothBridge : MonoBehaviour
     {
         return (float)SampleCounter[x][y] / AllCounts;
     }
+
+    public float[] get_BetterRawSamples() { return new float[] { SampleCounter[0][0], SampleCounter[1][0], SampleCounter[0][1], SampleCounter[1][1] }; }
+
+    public float[] get_BetterSamples() { return  new float[] { get_Sample(0, 0), get_Sample(1, 0), get_Sample(0, 1), get_Sample(1, 1) }; }
 
     public void flush_Samples() 
     {

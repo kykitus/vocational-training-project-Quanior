@@ -13,6 +13,7 @@ public class PaintController : MonoBehaviour
     public Button Eraser;
     public Button StopDrawing;
     public Button Clean;
+    public Button Undo;
 
     public GameObject DrawBase;
     public GameObject DrawLinePrefab;
@@ -51,6 +52,7 @@ public class PaintController : MonoBehaviour
         Eraser.onClick.AddListener(start_Erase);
         StopDrawing.onClick.AddListener(stop_Draw);
         Clean.onClick.AddListener(clean_Canva);
+        Undo.onClick.AddListener(undo_Line);
 
         DrawColor.ColorUpdate.AddListener(set_DrawColor);
         WallColor.ColorUpdate.AddListener(set_WallColor);
@@ -146,6 +148,11 @@ public class PaintController : MonoBehaviour
         CurrentLine.endWidth = Width;
         CurrentLine.positionCount++;
         CurrentLine.SetPosition(CurrentLine.positionCount - 1, point);
+    }
+
+    void undo_Line() 
+    {
+        Destroy(DrawBase.transform.GetChild(DrawBase.transform.childCount - 1).gameObject);
     }
 
     Color get_Inverted(Color color) 

@@ -17,6 +17,8 @@ public class SettingsController : MonoBehaviour
     public Button Desampler;
 
     public TextMeshProUGUI[] Samplers = new TextMeshProUGUI[4];
+    public SpriteRenderer[] SamplerPlaces = new SpriteRenderer[4];
+
 
     //Presets
     public Button Max25;
@@ -57,7 +59,7 @@ public class SettingsController : MonoBehaviour
         Returner.onClick.AddListener(returner);
 
         Sampler.onClick.AddListener(() => { Bridge.set_Smapler(true); Samplerator = get_Samples; });
-        Desampler.onClick.AddListener(() => { Bridge.set_Smapler(true); Bridge.flush_Samples(); Samplerator = () => { }; foreach (TextMeshProUGUI n in Samplers) n.text = ""; });
+        Desampler.onClick.AddListener(() => { Bridge.set_Smapler(true); Bridge.flush_Samples(); Samplerator = () => { }; });
 
         Max25.onClick.AddListener(() => { set_ScaleX(3.6f); set_ScaleY(3.6f); });
         Max35.onClick.AddListener(() => { set_ScaleX(2.5714f); set_ScaleY(2.5714f); });
@@ -152,9 +154,20 @@ public class SettingsController : MonoBehaviour
 
     void get_Samples() 
     {
-        Samplers[0].text = Bridge.get_Sample(0, 0).ToString();
-        Samplers[1].text = Bridge.get_Sample(1, 0).ToString();
-        Samplers[2].text = Bridge.get_Sample(0, 1).ToString();
-        Samplers[3].text = Bridge.get_Sample(1, 1).ToString();
+        float[] nums = Bridge.get_BetterSamples();
+        foreach (int n in Enumerable.Range(0,4)) 
+        {
+            Samplers[n].text = (nums[n] * 100f).ToString();
+            Color color = SamplerPlaces[n].color;
+            color.a = nums[n];
+            SamplerPlaces[n].color = color;
+        }
     }
+
+    void flush_Samples()
+    {
+        foreach (TextMeshProUGUI n in Samplers) { n.text = ""; };
+        foreach (SpriteRenderer n in SamplerPlaces) { Color color = n.color; color.a = 0; n.color = color; };
+    }
+
 }
